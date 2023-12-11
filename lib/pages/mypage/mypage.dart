@@ -17,10 +17,6 @@ import '/model/messages/Message.dart';
 
 import '/model/messages/MessageWrite.dart';
 
-
-
-
-
 class Mypage extends ConsumerStatefulWidget {
   const Mypage({Key? key}) : super(key: key);
 
@@ -69,8 +65,6 @@ class InfoPanel extends ConsumerStatefulWidget {
 }
 
 class _InfoPanelState extends ConsumerState<InfoPanel> {
-  String gender = "male"; // 임시값
-
   @override
   void initState() {
     super.initState();
@@ -86,11 +80,10 @@ class _InfoPanelState extends ConsumerState<InfoPanel> {
       height: 150,
     );
 
-    Widget genderIcon = setGenderIcon(gender);
-
-
     var memberInfoDTO =  ref.watch(myPageProvider).memberInfoDTO;
     print(memberInfoDTO);
+
+    Widget genderIcon = setGenderIcon(memberInfoDTO!.gender!);
 
     return Column(
       children: [
@@ -121,11 +114,16 @@ class _InfoPanelState extends ConsumerState<InfoPanel> {
                     children: [
                       avatar,
                       const SizedBox(height: 10),
-                      Text(memberInfoDTO!.name!, style: TextStyle(
-                        fontSize: 27,
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w400,
-                      )
+                      Row(
+                        children: [
+                          Text(memberInfoDTO!.name!, style: TextStyle(
+                            fontSize: 27,
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                          )
+                          ),
+                          genderIcon,
+                        ],
                       ),
                     ],
                   ),
@@ -135,7 +133,7 @@ class _InfoPanelState extends ConsumerState<InfoPanel> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                       /* const Row(
+                        /* const Row(
                           children: [
                             Icon(Icons.star, size: 18),
                             SizedBox(width: 10),
@@ -171,20 +169,24 @@ class _InfoPanelState extends ConsumerState<InfoPanel> {
                               fontWeight: FontWeight.w300,
                             )
                             ),
-                            const SizedBox(width: 15),
-                            genderIcon,
+                            const SizedBox(width: 15)
                           ],
                         ),
-
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            const Icon(Icons.star, size: 18),
+                            const SizedBox(width: 10),
+                            Text("reviews: 4.7/5", style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w300,
+                            )
+                            ),
+                            const SizedBox(width: 15)
+                          ],
+                        ),
                       ],
-
-
-
-
-
-
-
-
                     ),
                   ),
 
@@ -202,9 +204,9 @@ class _InfoPanelState extends ConsumerState<InfoPanel> {
   Widget setGenderIcon(String gender) {
     switch (gender) {
       case "MALE":
-        return const Icon(Icons.male, size: 18, color: Colors.blue);
+        return const Icon(Icons.male, size: 24, color: Colors.blue);
       case "FEMALE":
-        return const Icon(Icons.female, size: 18, color: Colors.red);
+        return const Icon(Icons.female, size: 24, color: Colors.red);
       default:
         return const SizedBox();
     }
@@ -240,6 +242,7 @@ class _AssessmentPanelState extends ConsumerState<AssessmentPanel> {
 
           ), textAlign: TextAlign.center),
           const SizedBox(height: 15),
+
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: Colors.transparent,
@@ -250,95 +253,162 @@ class _AssessmentPanelState extends ConsumerState<AssessmentPanel> {
             onPressed: () {
               context.go("/mypage/assessment");
             },
-            child: Container(
-              width: 330,
-              height: 154,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 8,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: PageView.builder(
-                controller: pageController,
-                itemCount: 1, // 값 필요
-                itemBuilder: (BuildContext context, int index) {
-                  return SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(memberInfoDTO.myIntroduceTitle, style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          ),
-                          SizedBox(height: 10),
-                          Wrap(
-                            alignment: WrapAlignment.center,
-                            children: [
-                              Text("${memberInfoDTO.myIntroduceContents}", style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 24
-                              ),
-                              ),
-                              Icon(Icons.arrow_circle_right, color: Colors.pink, size: 25),
-                            ],
-                          ),
-                          SizedBox(height: 1),
-                         /* Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text("xxxx.xx.xx ~ xxxx.xx.xx", style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'Pretendard',
-                                fontWeight: FontWeight.w400,
-                              ),
-                              ),
-                              Text("총 인원 n", style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'Pretendard',
-                                fontWeight: FontWeight.w400,
-                              ),
-                              ),
-                            ],
-                          ),*/
-                        ],
+            child: Column(
+              children: [
+                Container(
+                  width: 330,
+                  height: 154,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 8,
+                        offset: Offset(0, 5),
                       ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(memberInfoDTO.myIntroduceTitle, style: const TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
                     ),
-                  );
-                },
-              ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Container(
+                    width: 330,
+                    height: 154,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 8,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: PageView(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text("파티장: 최민준", style: TextStyle(color: Colors.black)),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children:[
+                                      Text("i want to travel Tokyo", style: TextStyle(color: Colors.black, fontSize: 25)),
+                                      Icon(Icons.arrow_circle_right, color: Colors.black,),
+                                    ]
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text("2023-12-19 ~ 2023-12-29", style: TextStyle(color: Colors.black),),
+                                    Text("총 인원: 5", style: TextStyle(color: Colors.black),),
+                                  ],
+                                ),
+                              ]
+                          ),
+
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text("파티장: 이주형형", style: TextStyle(color: Colors.black)),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children:[
+                                      Text("오꼬노미야끼", style: TextStyle(color: Colors.black, fontSize: 25)),
+                                      Icon(Icons.arrow_circle_right, color: Colors.black,),
+                                    ]
+                                ),
+                                SizedBox(height: 1),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text("2023-12-11 ~ 2023-12-25", style: TextStyle(color: Colors.black),),
+                                    Text("총 인원: 5", style: TextStyle(color: Colors.black),),
+                                  ],
+                                ),
+                              ]
+                          ),
+
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text("파티장: 최민준", style: TextStyle(color: Colors.black)),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children:[
+                                      Text("닭강정먹으로", style: TextStyle(color: Colors.black, fontSize: 25)),
+                                      Icon(Icons.arrow_circle_right, color: Colors.black,),
+                                    ]
+                                ),
+                                SizedBox(height: 1),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text("2023-12-11 ~ 2023-12-11", style: TextStyle(color: Colors.black),),
+                                    Text("총 인원 n", style: TextStyle(color: Colors.black),),
+                                  ],
+                                ),
+                              ]
+                          ),
+
+                        ),
+                      ],
+                    )
+                )
+                // Container(
+                //   width: 330,
+                //   height: 154,
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(30),
+                //     color: Colors.white,
+                //     boxShadow: [
+                //       BoxShadow(
+                //         color: Colors.grey.withOpacity(0.5),
+                //         spreadRadius: 1,
+                //         blurRadius: 8,
+                //         offset: const Offset(0, 5),
+                //       ),
+                //     ],
+                //   ),
+                //   child: PageView(
+                //     controller: pageController,
+                //       return Column(
+                //         children: [
+                //           ]
+                //       );
+                //     },
+                //   ),
+                // ),
+              ],
             ),
           ),
           const SizedBox(height: 15),
-          Center(
-            child: SmoothPageIndicator(
-              controller: pageController,
-              count: 3, // 값 필요
-              effect: const SlideEffect(
-                  spacing: 8.0,
-                  radius: 4.0,
-                  dotWidth: 10.0,
-                  dotHeight: 10.0,
-                  paintStyle: PaintingStyle.fill,
-                  strokeWidth: 1.5,
-                  dotColor: Colors.grey,
-                  activeDotColor: Colors.pink
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
         ],
       ),
     );

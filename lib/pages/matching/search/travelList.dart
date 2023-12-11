@@ -130,9 +130,19 @@ class _TravelCardState extends ConsumerState<TravelCard> {
                 '${widget.data.mainTravelSpace!}',
                 style: TextStyle(fontSize: 18,color: Colors.pink, fontWeight: FontWeight.w600),
               ),
-              Text(
-                '${widget.data.startDate!.toString().substring(0,10)}',
-                style: TextStyle(fontSize: 16),
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  Text(
+                    '${widget.data.startDate!.toString().substring(0,10)}',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const Text(" ~ "),
+                  Text(
+                    '${widget.data.endDate!.toString().substring(0,10)}',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
               Text(
                 '${widget.data.host.name!}',

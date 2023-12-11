@@ -32,6 +32,7 @@ class _ChatState extends ConsumerState<Chat> {
     final messageList = ref.watch(messageProvider);
     return SafeArea(
       child: ListView.builder(
+
         itemCount: messageList.length,
         padding: EdgeInsets.only(top: 8),
         itemBuilder: (context, index) {

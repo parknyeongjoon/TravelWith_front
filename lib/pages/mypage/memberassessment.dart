@@ -1,6 +1,12 @@
-import "package:flutter/material.dart";
-import "package:random_avatar/random_avatar.dart";
-import "package:tripmating/pages/mypage/mypage.dart";
+import 'package:flutter/material.dart';
+import 'package:random_avatar/random_avatar.dart';
+
+class Member {
+  final String name;
+  final int score;
+
+  Member({required this.name, required this.score});
+}
 
 class MemberAssessment extends StatefulWidget {
   const MemberAssessment({super.key});
@@ -10,54 +16,55 @@ class MemberAssessment extends StatefulWidget {
 }
 
 class _MemberAssessmentState extends State<MemberAssessment> {
+  // 샘플 데이터
+  final List<Member> members = [
+    Member(name: '한상구', score: 1),
+    Member(name: '이용현', score: 5),
+    Member(name: '박녕준', score: 4),
+    Member(name: '최민준', score: 5),
+    Member(name: '이주형', score: 5)
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(preferredSize: const Size.fromHeight(50),
-          child: AppBar(
-            title: const Text("Member Assessment"),
-          ),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50),
+        child: AppBar(
+          title: const Text("Member Assessment"),
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 16.0, bottom: 16, left: 30, right: 30),
-          child: ListView.builder(
-            itemCount: 3,// 값 필요 여행 멤버 수
-            itemBuilder: (context, index){
-              return const AssessmentCard();
-            },
-          ),
-        )
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 16.0, bottom: 16, left: 30, right: 30),
+        child: ListView.builder(
+          itemCount: members.length,
+          itemBuilder: (context, index) {
+            return AssessmentCard(member: members[index]);
+          },
+        ),
+      ),
     );
   }
 }
 
 class AssessmentCard extends StatefulWidget {
-  const AssessmentCard({super.key});
+  final Member member;
+
+  const AssessmentCard({super.key, required this.member});
 
   @override
   State<AssessmentCard> createState() => _AssessmentCardState();
 }
 
 class _AssessmentCardState extends State<AssessmentCard> {
-  Widget avatar = RandomAvatar("000000000000", width: 50, height: 50);//임시값
+  Widget avatar = RandomAvatar("000000000000", width: 50, height: 50);
 
-  List<Icon> starIcons = [
-    const Icon(Icons.star),
-    const Icon(Icons.star),
-    const Icon(Icons.star),
-    const Icon(Icons.star),
-    const Icon(Icons.star),
-  ];
+  late List<bool> selectedStars;
 
-  changeStar(int score){
-    setState(() {
-      for(int i = 0; i < score; i++){
-        starIcons[i] = const Icon(Icons.star);
-      }
-      for(int i = score; i < 5; i++){
-        starIcons[i] = const Icon(Icons.star_border_outlined);
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    selectedStars = List.generate(5, (index) => index < widget.member.score);
   }
 
   @override
@@ -76,53 +83,47 @@ class _AssessmentCardState extends State<AssessmentCard> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
-                      shadowColor: const Color.fromRGBO(0, 0, 0, 0),
-                  ),
-                  onPressed: (){
-                    showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context){
-                          return const AlertDialog(
-                              content: InfoPanel()
-                          );
-                        }
-                    );
-                  }, child: avatar
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
+                  shadowColor: const Color.fromRGBO(0, 0, 0, 0),
+                ),
+                onPressed: () {
+                  // Do something when the button is pressed
+                },
+                child: avatar,
               ),
-              const Text("이름"),
+              Text(widget.member.name),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  SizedBox(
+                  for (int i = 0; i < 5; i++)
+                    SizedBox(
                       width: 40,
                       height: 40,
-                      child: IconButton(onPressed: () { changeStar(1); }, icon: starIcons[0])
-                  ),
-                  SizedBox(
-                      width: 40,
-                      child: IconButton(onPressed: () { changeStar(2); }, icon: starIcons[1])
-                  ),
-                  SizedBox(
-                      width: 40,
-                      child: IconButton(onPressed: () { changeStar(3); }, icon: starIcons[2])
-                  ),
-                  SizedBox(
-                      width: 40,
-                      child: IconButton(onPressed: () { changeStar(4); }, icon: starIcons[3])
-                  ),
-                  SizedBox(
-                      width: 40,
-                      child: IconButton(onPressed: () { changeStar(5); }, icon: starIcons[4])
-                  )
+                      child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            for (int j = 0; j <= i; j++) {
+                              selectedStars[j] = true;
+                            }
+                            for (int j = i + 1; j < 5; j++) {
+                              selectedStars[j] = false;
+                            }
+                          });
+                        },
+                        icon: selectedStars[i]
+                            ? const Icon(Icons.star)
+                            : const Icon(Icons.star_border_outlined),
+                      ),
+                    ),
                 ],
               ),
               SizedBox(
-                  width: 270,
-                  child: ElevatedButton(onPressed: (){}, child: const Icon(Icons.check))
-              )
+                width: 270,
+                child: ElevatedButton(onPressed: () {
+                  // Do something when the check button is pressed
+                }, child: const Icon(Icons.check)),
+              ),
             ],
           ),
         ),
@@ -130,4 +131,3 @@ class _AssessmentCardState extends State<AssessmentCard> {
     );
   }
 }
-
